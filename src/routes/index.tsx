@@ -1,29 +1,26 @@
-import React, { Suspense, ComponentType } from "react";
-import { Routes, Route } from "react-router-dom";
-import Foo from "../pages/Foo";
-import Bar from "../pages/Bar";
-import NotFount from "../components/NotFount";
-import Home from "../pages/Home";
-import { BaseMenus } from "./config";
-import RouterConfig from "./config";
-import { find } from "lodash";
+import React, { Suspense, ComponentType, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from '../pages/Home';
+import NotFount from '../components/NotFount';
+import menus from './config';
+import { BaseMenusType } from './config';
 
-function lazy(Component: ComponentType) {
-  return (
-    <Suspense fallback={<div>....Loading</div>}>
-      <Component />
-    </Suspense>
-  );
-}
+const Loading = <div>Loading...</div>;
+
+const LazyLoad = (src: React.ReactNode) => (
+  <Suspense fallback={Loading}>
+    {React.createElement(lazy(() => import(`../pages/${src}`)))}
+  </Suspense>
+);
 
 function CRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {["Bar", "Foo"].map((routeName) => {
-        const r = RouterConfig.find(({ name }) => name === routeName);
+      {['Bar', 'Foo'].map((menu) => {
+        const r = menus.find(({ src }) => src === menu) as BaseMenusType;
         return (
-          <Route path={r.path} element={lazy(r.component)} key={r.name}></Route>
+          <Route path={r.path} element={LazyLoad(r.src)} key={r.label}></Route>
         );
       })}
       <Route path="*" element={<NotFount />} />
