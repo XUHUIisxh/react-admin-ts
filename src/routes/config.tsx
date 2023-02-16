@@ -1,9 +1,9 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from "react";
 import {
   AppstoreOutlined,
   MailOutlined,
   SettingOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 /**
  * @label menuItem label
  * @path route path
@@ -25,35 +25,43 @@ export interface BaseMenusType {
 
 const menus: BaseMenusType[] = [
   {
-    label: 'Home',
-    title: '我是Home',
-    path: '/',
-    src: 'Home',
+    label: "Home",
+    title: "我是Home",
+    path: "/",
+    src: "Home",
     icon: <AppstoreOutlined />,
-    auth: ['admin'],
+    auth: ["admin"],
   },
   {
-    label: 'Bar',
-    title: '我是Bar',
-    path: '/Bar',
-    src: 'Bar',
+    label: "Bar",
+    title: "我是Bar",
+    path: "/Bar",
+    src: "Bar",
     icon: <MailOutlined />,
-    auth: ['admin', 'role1'],
+    auth: ["admin", "role1"],
   },
   {
-    label: '父级',
-    title: '我是父级',
-    path: '/Foo',
+    label: "父级",
+    title: "我是父级",
+    path: "/Foo",
     icon: <SettingOutlined />,
-    auth: ['admin', 'role2'],
+    auth: ["admin", "role1", "role2"],
     children: [
       {
-        label: 'test',
-        title: '我是test',
-        path: '/test',
-        src: 'Test',
+        label: "test",
+        title: "我是test",
+        path: "/test",
+        src: "Test",
         icon: <AppstoreOutlined />,
-        auth: ['admin'],
+        auth: ["admin", "role2"],
+      },
+      {
+        label: "Foo",
+        title: "我是Foo",
+        path: "/foo",
+        src: "Foo",
+        icon: <AppstoreOutlined />,
+        auth: ["admin", "role1"],
       },
     ],
   },
