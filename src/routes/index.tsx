@@ -6,7 +6,7 @@ import Loading from "../components/Loading";
 import menus from "./config";
 import { BaseMenusType } from "./config";
 
-const auth = "role2";
+const auth = "admin";
 
 const LazyLoad = (src: React.ReactNode) => (
   <Suspense fallback={<Loading />}>
@@ -20,7 +20,9 @@ const checkAuth = (menu: BaseMenusType) => {
   }
 };
 
-const filterAuthorizedMenus = (menus: BaseMenusType[]): BaseMenusType[] => {
+export const filterAuthorizedMenus = (
+  menus: BaseMenusType[]
+): BaseMenusType[] => {
   return menus.filter((m) => {
     if (m.children?.length && checkAuth(m)) {
       return (m.children = filterAuthorizedMenus(m.children));
@@ -52,7 +54,7 @@ function CRoutes() {
           <Route
             path={menu.path}
             element={LazyLoad(menu.src)}
-            key={menu.label}
+            key={menu.key}
           ></Route>
         );
       })}

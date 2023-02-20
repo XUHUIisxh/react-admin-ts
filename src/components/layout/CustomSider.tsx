@@ -1,5 +1,5 @@
-import React from 'react';
-import { Layout, Menu } from 'antd';
+import React from "react";
+import { Layout, Menu } from "antd";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -10,12 +10,14 @@ import {
   PieChartOutlined,
   TeamOutlined,
   UserOutlined,
-} from '@ant-design/icons';
-import menus from '../../routes/config';
-import type { MenuProps } from 'antd';
-import { BaseMenusType } from '../../routes/config';
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import menus from "../../routes/config";
+import type { MenuProps } from "antd";
+import { BaseMenusType } from "../../routes/config";
+import { filterAuthorizedMenus } from "../../routes/index";
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>["items"][number];
 type IProps = {
   collapsed: boolean;
   backgroundColor: string;
@@ -23,37 +25,48 @@ type IProps = {
 
 const { Sider } = Layout;
 
-// TODO 类型待优化
+// TODO 待优化
 function generateMenus(menus: BaseMenusType[]): MenuItem[] {
-  return menus.map(({ label, icon, children }) => {
-    if (children) {
-      let child = generateMenus(children);
-      return {
+  let menusArr: MenuItem[] = [];
+  menus.map(({ key, label, icon, children, src }) => {
+    if (children?.length) {
+      menusArr.push({
         label: label,
         icon: icon,
-        key: label,
-        children: child,
-      };
+        key: key,
+        children: generateMenus(children),
+      });
+      return;
     }
-    return {
-      label: label,
-      icon: icon,
-      key: label,
-    };
+    if (src) {
+      menusArr.push({
+        label: label,
+        icon: icon,
+        key: key,
+      });
+      return;
+    }
   });
+  return menusArr;
 }
 
-const items = generateMenus(menus);
+const items = generateMenus(filterAuthorizedMenus(menus));
 
-const CustomSider: React.FC<IProps> = ({ collapsed, backgroundColor }) => {
+const CustomSider: React.FC<IProps> = (props) => {
+  const navigate = useNavigate();
+
+  const onSelect: MenuProps["onSelect"] = ({ key }) => {
+    navigate(key);
+  };
+
   return (
     <Sider
-      style={{ backgroundColor: backgroundColor }}
+      style={{ backgroundColor: props.backgroundColor }}
       trigger={null}
       collapsible
-      collapsed={collapsed}
+      collapsed={props.collapsed}
     >
-      <Menu mode="inline" items={items} />
+      <Menu mode="inline" items={items} onSelect={onSelect} />
     </Sider>
   );
 };

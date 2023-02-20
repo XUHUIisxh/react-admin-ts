@@ -5,6 +5,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 /**
+ * @key key
  * @label menuItem label
  * @path route path
  * @src component src
@@ -14,8 +15,9 @@ import {
  * @children children menus
  */
 export interface BaseMenusType {
-  label: string;
-  path: string;
+  key: React.Key;
+  label: React.ReactNode;
+  path?: string;
   src?: string;
   title?: string;
   icon?: React.ReactNode;
@@ -25,29 +27,32 @@ export interface BaseMenusType {
 
 const menus: BaseMenusType[] = [
   {
+    key: "Home",
     label: "Home",
     title: "我是Home",
-    path: "/",
+    path: "/home",
     src: "Home",
     icon: <AppstoreOutlined />,
     auth: ["admin"],
   },
   {
+    key: "Bar",
     label: "Bar",
     title: "我是Bar",
-    path: "/Bar",
+    path: "/bar",
     src: "Bar",
     icon: <MailOutlined />,
     auth: ["admin", "role1"],
   },
   {
+    key: "father",
     label: "父级",
     title: "我是父级",
-    path: "/Foo",
     icon: <SettingOutlined />,
     auth: ["admin", "role1", "role2"],
     children: [
       {
+        key: "test",
         label: "test",
         title: "我是test",
         path: "/test",
@@ -56,6 +61,7 @@ const menus: BaseMenusType[] = [
         auth: ["admin", "role2"],
       },
       {
+        key: "Foo",
         label: "Foo",
         title: "我是Foo",
         path: "/foo",
