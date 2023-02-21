@@ -17,15 +17,6 @@ const App: React.FC<IProps> = (props) => {
 
   return (
     <BaseLayout>
-      <Button type="primary" onClick={() => toPage("/")}>
-        首页
-      </Button>
-      <Button type="primary" onClick={() => toPage("/foo")}>
-        Foo
-      </Button>
-      <Button type="primary" onClick={() => toPage("/bar")}>
-        Bar
-      </Button>
       <CRoutes />
     </BaseLayout>
   );
