@@ -17,4 +17,15 @@
 
 ## 关于状态管理 使用 @reduxjs/toolkit 本质是上简化redux的一些操作
 
-参考文档 <https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts>
+[参考文档](https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts)
+
+## eslint
+
+1. [eslint官网](https://zh-hans.eslint.org/)
+2. [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react/#shareable-configs)
+3. [eslint-plugin-react-hooks](https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks)
+
+## prettier
+
+1. [prettier官网](https://www.prettier.cn/docs//install.html)
+2. [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)
