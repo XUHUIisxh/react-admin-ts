@@ -2,13 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import counterSlice from "./features/counterSlice";
 import userSlice from "./features/userSlice";
+import postSlice from "./features/postSlice";
 
 // TODO 待增增强中间件等内容 https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts
 const store = configureStore({
-  reducer: {
-    counter: counterSlice,
-    user: userSlice,
-  },
+	reducer: {
+		counter: counterSlice,
+		user: userSlice,
+		posts: postSlice,
+	},
 });
 
 // 从store本身推断出 RootState 和 AppDispatch 类型
