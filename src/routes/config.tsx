@@ -90,6 +90,15 @@ const menus: BaseMenusType[] = [
 				icon: <AppstoreOutlined />,
 				auth: ["admin", "role1"],
 			},
+			{
+				key: "EditPostForm",
+				label: "EditPostForm",
+				title: "EditPostForm",
+				path: "/EditPostForm/:postId",
+				component: "Toolkit/EditPostForm",
+				icon: <AppstoreOutlined />,
+				auth: ["admin", "role1"],
+			},
 		],
 	},
 ];
