@@ -4,13 +4,12 @@ import { useParams } from "react-router";
 import { RootState } from "../../store/index";
 import { useNavigate } from "react-router-dom";
 import PostAuth from "./components/PostAuth";
-import { postType } from "../../store/features/postSlice";
+import { Post } from "../../store/features/postSlice";
+import ReactionButtons from "./components/ReactionButtons";
 
 const SinglePostPage = () => {
 	const { postId } = useParams();
 	const navigate = useNavigate();
-
-	const post = useSelector((state: RootState) => state.posts.find((post) => postId === post.id));
 
 	if (!postId) {
 		return (
@@ -20,12 +19,15 @@ const SinglePostPage = () => {
 		);
 	}
 
+	const post = useSelector((state: RootState) => state.posts.find((post) => postId === post.id)) as Post;
+
 	return (
 		<section>
 			<article className='post'>
-				<h2>{post?.title}</h2>
-				<p className='post-content'>{post?.content}</p>
-				<PostAuth userId={(post as postType)?.user} />
+				<h2>{post.title}</h2>
+				<p className='post-content'>{post.content}</p>
+				<PostAuth userId={post.user} />
+				<ReactionButtons post={post} />
 				<button type='button' onClick={() => navigate(`/EditPostForm/${postId}`)}>
 					Edit Post
 				</button>

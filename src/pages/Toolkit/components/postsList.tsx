@@ -1,8 +1,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/index";
 import { useNavigate } from "react-router";
-import dayjs from "dayjs";
-import { postType } from "../../../store/features/postSlice";
+import { Post } from "../../../store/features/postSlice";
 
 const PostsList = () => {
 	const navigate = useNavigate();
@@ -13,7 +12,8 @@ const PostsList = () => {
 		navigate(`/SinglePostPage/${post?.id}`);
 	};
 
-	const orderPosts = posts.slice().sort((a: postType, b: postType) => {
+	/** 排序 */
+	const orderPosts = posts.slice().sort((a: Post, b: Post) => {
 		return b.date - a.date;
 	});
 

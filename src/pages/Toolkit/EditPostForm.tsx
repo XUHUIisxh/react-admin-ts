@@ -20,7 +20,7 @@ const EditPostForm = () => {
 
 	const onSavePostClick = () => {
 		if (title && content) {
-			dispatch(postUpdated({ id: Number(postId), title, content }));
+			dispatch(postUpdated({ id: postId, title, content }));
 			navigate(`/SinglePostPage/${postId}`);
 		}
 	};

@@ -48,11 +48,15 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "msw": "^1.1.0",
     "prettier": "2.8.4",
     "redux-devtools": "^3.7.0"
   },
   "main": "index.js",
   "repository": "https://github.com/XUHUIisxh/react-admin-ts.git",
   "author": "xu <xxxx@163.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "msw": {
+    "workerDirectory": "public"
+  }
 }
