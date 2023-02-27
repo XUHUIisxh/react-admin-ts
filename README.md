@@ -36,3 +36,8 @@
 
 1. [prettier官网](https://www.prettier.cn/docs//install.html)
 2. [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)
+
+## mock
+
+[mswjs](https://mswjs.io/docs/api/rest)
+[掘金例子](https://juejin.cn/post/7018732383067176991#heading-3)
