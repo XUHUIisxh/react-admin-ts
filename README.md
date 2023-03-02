@@ -39,5 +39,6 @@
 
 ## mock
 
-[mswjs](https://mswjs.io/docs/api/rest)
+[mswjs](https://github.com/mswjs/data)
+[faker-js](https://github.com/faker-js/faker)
 [掘金例子](https://juejin.cn/post/7018732383067176991#heading-3)

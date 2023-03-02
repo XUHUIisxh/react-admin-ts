@@ -1,16 +1,24 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store/index";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Post } from "../../../store/features/postSlice";
+import { RootState, useAppDispatch, useAppSelector } from "../../../store/index";
+import { fetchPosts, Post, selectAllPosts } from "../../../store/features/postsSlice";
 
 const PostsList = () => {
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const posts = useSelector((state: RootState) => state.posts);
+	const posts = useAppSelector(selectAllPosts);
+	const postsStatus = useAppSelector((state) => state.posts.status);
 
-	const linkTo = (post: RootState["posts"][number]) => {
-		navigate(`/SinglePostPage/${post?.id}`);
+	const linkTo = (post: RootState["posts"]["posts"][number]) => {
+		navigate(`/SinglePostPage/${post.id}`);
 	};
+
+	useEffect(() => {
+		if (postsStatus === "idle") {
+			dispatch(fetchPosts());
+		}
+	}, [dispatch, postsStatus]);
 
 	/** 排序 */
 	const orderPosts = posts.slice().sort((a: Post, b: Post) => {

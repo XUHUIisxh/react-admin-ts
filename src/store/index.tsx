@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import counterSlice from "./features/counterSlice";
 import usersSlice from "./features/usersSlice";
-import postSlice from "./features/postSlice";
+import postSlice from "./features/postsSlice";
 
 // TODO 待增增强中间件等内容 https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts
 const store = configureStore({

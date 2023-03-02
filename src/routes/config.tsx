@@ -29,7 +29,7 @@ const menus: BaseMenusType[] = [
 		path: "/home",
 		component: "Home",
 		icon: <AppstoreOutlined />,
-		auth: ["admin"],
+		auth: ["admin", "role1"],
 	},
 	{
 		key: "Bar",
@@ -44,7 +44,6 @@ const menus: BaseMenusType[] = [
 		key: "father",
 		label: "父级",
 		icon: <SettingOutlined />,
-		auth: ["admin", "role1", "role2"],
 		children: [
 			{
 				key: "test",
@@ -62,7 +61,7 @@ const menus: BaseMenusType[] = [
 				path: "/foo",
 				component: "Foo",
 				icon: <AppstoreOutlined />,
-				auth: ["admin", "role1"],
+				auth: ["admin", "role2"],
 			},
 		],
 	},
@@ -70,7 +69,6 @@ const menus: BaseMenusType[] = [
 		key: "ToolKit",
 		label: "Redux/ToolKit",
 		icon: <AppstoreOutlined />,
-		auth: ["admin"],
 		children: [
 			{
 				key: "postsList",
@@ -78,24 +76,6 @@ const menus: BaseMenusType[] = [
 				title: "postsList",
 				path: "/postsList",
 				component: "Toolkit",
-				icon: <AppstoreOutlined />,
-				auth: ["admin", "role1"],
-			},
-			{
-				key: "SinglePostPage",
-				label: "SinglePostPage",
-				title: "SinglePostPage",
-				path: "/SinglePostPage/:postId",
-				component: "Toolkit/SinglePostPage",
-				icon: <AppstoreOutlined />,
-				auth: ["admin", "role1"],
-			},
-			{
-				key: "EditPostForm",
-				label: "EditPostForm",
-				title: "EditPostForm",
-				path: "/EditPostForm/:postId",
-				component: "Toolkit/EditPostForm",
 				icon: <AppstoreOutlined />,
 				auth: ["admin", "role1"],
 			},

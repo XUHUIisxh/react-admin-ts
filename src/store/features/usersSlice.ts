@@ -1,17 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { users } from "../../api/fakeApi";
+import { RootState } from "../index";
 
-const initialState = [
-	{ id: "0", name: "Tianna Jenkins" },
-	{ id: "1", name: "Kevin Grant" },
-	{ id: "2", name: "Madison Price" },
-];
+interface UserType {
+	id: string;
+	name: string;
+}
 
-export type user = (typeof initialState)[number];
+const initialState: UserType[] = [];
 
 export const userSlice = createSlice({
 	name: "users",
 	initialState,
 	reducers: {},
+	extraReducers(builder) {
+		builder.addCase(fetchUser.fulfilled, (state, action) => {
+			const data = action.payload as unknown;
+			state = state.concat(...(data as UserType[]));
+		});
+	},
 });
 
 export default userSlice.reducer;
+
+export const fetchUser = createAsyncThunk("users/fetchUsers", async () => {
+	const data = await users();
+	return data;
+});
+
+export const selectAllUser = (state: RootState) => state.users;

@@ -10,10 +10,8 @@ const auth = "admin";
 
 /** 懒加载 */
 const LazyLoad = (component: React.ReactNode) => (
-	// TODO 需要增加判断 component 的文件夹是否存在 fs 文件系统
-	<Suspense fallback={<Loading />}>
-		{React.createElement(lazy(() => import(`../pages/${component}`)))}
-	</Suspense>
+	// TODO 需要增加判断 component 的文件夹是否存在  tips：可以利用 fs 文件系统
+	<Suspense fallback={<Loading />}>{React.createElement(lazy(() => import(`../pages/${component}`)))}</Suspense>
 );
 
 /** 检查是否拥有权限 */
@@ -26,7 +24,7 @@ const checkAuth = (menu: BaseMenusType) => {
 /** 提取拥有权限的路由 */
 export const filterAuthorizedMenus = (menus: BaseMenusType[]): BaseMenusType[] => {
 	return menus.filter((m) => {
-		if (m.children?.length && checkAuth(m)) {
+		if (m.children?.length) {
 			return (m.children = filterAuthorizedMenus(m.children));
 		}
 		return checkAuth(m);
@@ -53,13 +51,7 @@ function CRoutes() {
 		<Routes>
 			<Route path='/' element={<Home />} />
 			{flatMenu(filterAuthorizedMenus(menus)).map((menu) => {
-				return (
-					<Route
-						path={menu.path}
-						element={LazyLoad(menu.component)}
-						key={menu.key}
-					></Route>
-				);
+				return <Route path={menu.path} element={LazyLoad(menu.component)} key={menu.key}></Route>;
 			})}
 			<Route path='*' element={<NotFount />} />
 		</Routes>

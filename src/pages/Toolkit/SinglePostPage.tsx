@@ -1,15 +1,16 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { RootState } from "../../store/index";
+import { useAppSelector } from "../../store/index";
 import { useNavigate } from "react-router-dom";
 import PostAuth from "./components/PostAuth";
-import { Post } from "../../store/features/postSlice";
+import { selectPostById } from "../../store/features/postsSlice";
 import ReactionButtons from "./components/ReactionButtons";
 
 const SinglePostPage = () => {
 	const { postId } = useParams();
 	const navigate = useNavigate();
+
+	const post = useAppSelector((state) => selectPostById(state, postId!))!;
 
 	if (!postId) {
 		return (
@@ -18,8 +19,6 @@ const SinglePostPage = () => {
 			</section>
 		);
 	}
-
-	const post = useSelector((state: RootState) => state.posts.find((post) => postId === post.id)) as Post;
 
 	return (
 		<section>

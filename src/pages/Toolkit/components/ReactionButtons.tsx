@@ -1,6 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { Post, reactionAdded } from "../../../store/features/postSlice";
+import { Post, reactionAdded } from "../../../store/features/postsSlice";
+import { useAppDispatch } from "../../../store/index";
 const ReactionEmoji = {
 	thumbsUp: "👍",
 	hooray: "🎉",
@@ -10,7 +10,7 @@ const ReactionEmoji = {
 };
 
 const ReactionButtons: React.FC<{ post: Post }> = ({ post }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const reactionButtons = Object.entries(ReactionEmoji).map(([name, emoji]) => {
 		return (
 			<button
