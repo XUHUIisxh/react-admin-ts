@@ -27,7 +27,7 @@ export const db = factory({
 	post: {
 		id: primaryKey(nanoid),
 		title: String,
-		data: String,
+		date: String,
 		content: String,
 		reactions: oneOf("reaction"),
 		comments: manyOf("comment"),

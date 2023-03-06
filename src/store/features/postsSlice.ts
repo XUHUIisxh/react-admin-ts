@@ -7,7 +7,7 @@ export interface Post {
 	id: string;
 	title: string;
 	content: string;
-	date: number;
+	date: string;
 	user: string;
 	reactions?: {
 		thumbsUp: number;
@@ -47,7 +47,7 @@ const postSlice = createSlice({
 				return {
 					payload: {
 						id: nanoid(),
-						date: dayjs().valueOf(),
+						date: dayjs().toISOString(),
 						title,
 						content,
 						user: userId,
@@ -61,6 +61,7 @@ const postSlice = createSlice({
 			if (existingPost) {
 				existingPost.title = title;
 				existingPost.content = content;
+				existingPost.date = dayjs().toISOString();
 			}
 		},
 		reactionAdded(state, action) {

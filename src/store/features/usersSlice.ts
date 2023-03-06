@@ -7,25 +7,30 @@ interface UserType {
 	name: string;
 }
 
-const initialState: UserType[] = [];
+interface UserInitialType {
+	users: UserType[];
+}
+
+const initialState: UserInitialType = {
+	users: [],
+};
 
 export const userSlice = createSlice({
 	name: "users",
 	initialState,
 	reducers: {},
 	extraReducers(builder) {
-		builder.addCase(fetchUser.fulfilled, (state, action) => {
-			const data = action.payload as unknown;
-			state = state.concat(...(data as UserType[]));
+		builder.addCase(fetchUsers.fulfilled, (state, action) => {
+			state.users = state.users.concat(...(action.payload as unknown as UserType[]));
 		});
 	},
 });
 
 export default userSlice.reducer;
 
-export const fetchUser = createAsyncThunk("users/fetchUsers", async () => {
+export const selectAllUser = (state: RootState) => state.users.users;
+
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 	const data = await users();
 	return data;
 });
-
-export const selectAllUser = (state: RootState) => state.users;

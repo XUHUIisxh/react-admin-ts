@@ -4,12 +4,11 @@ import RelativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(RelativeTime);
 
-const TimeAgo: React.FC<{ timestamp: string }> = ({ timestamp }) => {
-	const date = dayjs(timestamp);
+const TimeAgo: React.FC<{ date: string }> = ({ date }) => {
 	const timeAgo = dayjs().from(date);
 	return (
-		<span title={timestamp}>
-			&nbsp; <i>{timeAgo}</i>
+		<span title={date}>
+			TimeAgo: <i>{timeAgo}</i>
 		</span>
 	);
 };
