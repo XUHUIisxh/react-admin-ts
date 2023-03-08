@@ -5,6 +5,9 @@ import { RootState } from "../index";
 interface UserType {
 	id: string;
 	name: string;
+	userName: string;
+	avatarUrl: string;
+	imageUrl: string;
 }
 
 interface UserInitialType {
@@ -29,6 +32,8 @@ export const userSlice = createSlice({
 export default userSlice.reducer;
 
 export const selectAllUser = (state: RootState) => state.users.users;
+
+export const selectUserById = (state: RootState, userId: string) => state.users.users.find(({ id }) => id === userId);
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 	const data = await users();

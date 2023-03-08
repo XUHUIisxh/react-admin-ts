@@ -1,7 +1,13 @@
 import { factory, primaryKey, manyOf, oneOf } from "@mswjs/data";
 import { rest } from "msw";
-import { nanoid } from "@reduxjs/toolkit";
+import { Dictionary, nanoid } from "@reduxjs/toolkit";
 import { faker } from "@faker-js/faker";
+import { Client, Server as MockSocketServer } from "mock-socket";
+import { sentence } from "txtgen";
+import seedrandom from "seedrandom";
+import dayjs from "dayjs";
+import { FactoryAPI } from "@mswjs/data/lib/glossary";
+import { Database } from "@mswjs/data/lib/db/Database";
 
 faker.locale = "zh_CN";
 
@@ -12,6 +18,7 @@ const RECENT_NOTIFICATIONS_DAYS = 7;
 // Add an extra delay to all endpoints, so loading spinners show up.
 const ARTIFICIAL_DELAY_MS = 500;
 
+type DBType = typeof db;
 type DBUserType = ReturnType<(typeof db)["user"]["create"]>;
 type DBPostType = ReturnType<(typeof db)["post"]["create"]>;
 
@@ -22,6 +29,8 @@ export const db = factory({
 		lastName: String,
 		name: String,
 		userName: String,
+		avatarUrl: String,
+		imageUrl: String,
 		posts: manyOf("post"),
 	},
 	post: {
@@ -53,11 +62,15 @@ export const db = factory({
 const createUserData = () => {
 	const firstName = faker.name.firstName();
 	const lastName = faker.name.lastName();
+	const avatarUrl = faker.image.avatar();
+	const imageUrl = faker.image.image();
 	return {
 		firstName,
 		lastName,
+		avatarUrl,
+		imageUrl,
 		name: `${firstName}${lastName}`,
-		username: faker.internet.userName(),
+		userName: faker.internet.userName(),
 	};
 };
 
@@ -94,3 +107,81 @@ export const handlers = [
 		return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(users));
 	}),
 ];
+
+/** Mock socket setup */
+const socketServer = new MockSocketServer("ws://localhost");
+console.log("🚀 ~ file: post.ts:110 ~ socketServer:", socketServer);
+
+let currentSocket: Client;
+
+const rng = seedrandom();
+
+const randomFromArray = (array: DBUserType[] | string[]) => {
+	const index = getRandomInt(0, array.length - 1);
+	return array[index];
+};
+
+function getRandomInt(min: number, max: number) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(rng() * (max - min + 1)) + min;
+}
+
+const sendMessage = (socket: Client, obj: {}) => {
+	socket.send(JSON.stringify(obj));
+};
+
+const sendRandomNotifications = (socket: Client, since: string) => {
+	const numNotifications = getRandomInt(1, 5);
+
+	const notifications = generateRandomNotifications(since, numNotifications, db);
+
+	sendMessage(socket, { type: "notifications", payload: notifications });
+};
+
+export const forceGenerateNotifications = (since: string) => {
+	sendRandomNotifications(currentSocket, since);
+};
+
+socketServer.on("connection", (socket) => {
+	currentSocket = socket;
+	console.log("🚀 ~ file: post.ts:144 ~ socketServer.on ~ currentSocket:", currentSocket);
+
+	socket.on("message", (data) => {
+		const message = JSON.parse(data as string);
+
+		switch (message.type) {
+			case "notifications":
+				const since = message.payload;
+				break;
+
+			default:
+				break;
+		}
+	});
+});
+
+const notificationTemplates = ["poked you", "says hi!", `is glad we're friends`, "sent you a gift"];
+
+function generateRandomNotifications(since: string, numNotifications: number, db: DBType) {
+	let pastDate: string;
+
+	if (since) {
+		pastDate = dayjs(since).toISOString();
+	} else {
+		pastDate = dayjs().toISOString();
+	}
+
+	const notifications = [...Array(numNotifications)].map(() => {
+		const user = randomFromArray(db.user.getAll());
+		const template = randomFromArray(notificationTemplates);
+		return {
+			id: nanoid(),
+			data: dayjs(since).fromNow(),
+			message: template,
+			user: user,
+		};
+	});
+
+	return notifications;
+}

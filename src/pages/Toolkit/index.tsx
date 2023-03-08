@@ -3,6 +3,7 @@ import { fetchUsers } from "../../store/features/usersSlice";
 import { useAsyncEffect } from "ahooks";
 import { Tabs, TabsProps } from "antd";
 import PostList from "./postList";
+import UserList from "./userList";
 
 const TabsWrap: React.FC = () => {
 	const dispatch = useAppDispatch();
@@ -13,8 +14,13 @@ const TabsWrap: React.FC = () => {
 	const items: TabsProps["items"] = [
 		{
 			key: "1",
-			label: "文章",
+			label: "Posts",
 			children: <PostList />,
+		},
+		{
+			key: "2",
+			label: "Users",
+			children: <UserList />,
 		},
 	];
 
