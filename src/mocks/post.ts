@@ -22,6 +22,14 @@ type DBType = typeof db;
 type DBUserType = ReturnType<(typeof db)["user"]["create"]>;
 type DBPostType = ReturnType<(typeof db)["post"]["create"]>;
 
+const rng = seedrandom();
+
+function getRandomInt(min: number, max: number) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(rng() * (max - min + 1)) + min;
+}
+
 export const db = factory({
 	user: {
 		id: primaryKey(nanoid),
@@ -106,6 +114,13 @@ export const handlers = [
 		const users = db.user.getAll();
 		return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(users));
 	}),
+	rest.get("/fakeApi/notifications", (req, res, ctx) => {
+		const numNotifications = getRandomInt(1, 5);
+
+		let notifications = generateRandomNotifications(undefined, numNotifications, db);
+
+		return res(ctx.delay(ARTIFICIAL_DELAY_MS), ctx.json(notifications));
+	}),
 ];
 
 /** Mock socket setup */
@@ -114,18 +129,10 @@ console.log("🚀 ~ file: post.ts:110 ~ socketServer:", socketServer);
 
 let currentSocket: Client;
 
-const rng = seedrandom();
-
 const randomFromArray = (array: DBUserType[] | string[]) => {
 	const index = getRandomInt(0, array.length - 1);
 	return array[index];
 };
-
-function getRandomInt(min: number, max: number) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(rng() * (max - min + 1)) + min;
-}
 
 const sendMessage = (socket: Client, obj: {}) => {
 	socket.send(JSON.stringify(obj));
@@ -163,7 +170,7 @@ socketServer.on("connection", (socket) => {
 
 const notificationTemplates = ["poked you", "says hi!", `is glad we're friends`, "sent you a gift"];
 
-function generateRandomNotifications(since: string, numNotifications: number, db: DBType) {
+function generateRandomNotifications(since: string | undefined, numNotifications: number, db: DBType) {
 	let pastDate: string;
 
 	if (since) {
@@ -177,9 +184,10 @@ function generateRandomNotifications(since: string, numNotifications: number, db
 		const template = randomFromArray(notificationTemplates);
 		return {
 			id: nanoid(),
-			data: dayjs(since).fromNow(),
+			date: dayjs(since).toISOString(),
 			message: template,
 			user: user,
+			read: false,
 		};
 	});
 

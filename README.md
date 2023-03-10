@@ -25,6 +25,7 @@
 ## 关于状态管理 使用 @reduxjs/toolkit 本质是上简化redux的一些操作
 
 [参考文档](https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts)
+[配合typescript中文文档](https://redux-toolkit-cn.netlify.app/usage/usage-with-typescript)
 
 ## eslint
 

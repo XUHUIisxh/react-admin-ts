@@ -11,6 +11,8 @@ const ReactionEmoji = {
 	eyes: "👀",
 };
 
+type T = keyof typeof ReactionEmoji;
+
 const ReactionButtons: React.FC<{ post: Post }> = ({ post }) => {
 	const dispatch = useAppDispatch();
 	const reactionButtons = (
@@ -21,7 +23,7 @@ const ReactionButtons: React.FC<{ post: Post }> = ({ post }) => {
 						key={name}
 						size='small'
 						onClick={() => {
-							dispatch(reactionAdded({ postId: post.id, reaction: name }));
+							dispatch(reactionAdded({ postId: post.id, reaction: name as T }));
 						}}
 					>
 						{emoji}

@@ -1,7 +1,22 @@
-import { createSlice, nanoid, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+	createSlice,
+	nanoid,
+	PayloadAction,
+	createAsyncThunk,
+	createSelector,
+	createEntityAdapter,
+} from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 import { posts } from "../../api/fakeApi";
-import { RootState } from "../index";
+import store, { RootState } from "../index";
+
+export interface ReactionsType {
+	thumbsUp: number;
+	hooray: number;
+	heart: number;
+	rocket: number;
+	eyes: number;
+}
 
 export interface Post {
 	id: string;
@@ -10,76 +25,60 @@ export interface Post {
 	date: string;
 	user: string;
 	reactions?: {
-		thumbsUp: number;
-		hooray: number;
-		heart: number;
-		rocket: number;
-		eyes: number;
+		[K in keyof ReactionsType]: ReactionsType[K];
 	};
 }
 
 interface InitialType {
-	posts: any[];
 	status: string;
 	error: string | undefined;
 }
 
 export type EditPostType = {
 	postId: string;
-	reaction: keyof Post["reactions"];
+	reaction: keyof ReactionsType;
 };
 
-const initialState: InitialType = {
-	posts: [],
+const postsAdapter = createEntityAdapter<Post>({
+	selectId: (post) => post.id,
+	sortComparer: (a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf(),
+});
+
+const initialState = postsAdapter.getInitialState<InitialType>({
 	status: "idle",
 	error: "",
-};
+});
 
 const postSlice = createSlice({
 	name: "posts",
 	initialState,
 	reducers: {
-		postAdded: {
-			reducer(state, action: PayloadAction<Post>) {
-				state.posts.push(action.payload);
-			},
-			prepare: (title, content, userId) => {
-				return {
-					payload: {
-						id: nanoid(),
-						date: dayjs().toISOString(),
-						title,
-						content,
-						user: userId,
-					},
-				};
-			},
-		},
+		postAdded: postsAdapter.addOne,
 		postUpdated: (state, { payload }) => {
 			const { id, title, content } = payload;
-			const existingPost = state.posts.find((post) => post.id === id);
+			const existingPost = state.entities[id];
 			if (existingPost) {
 				existingPost.title = title;
 				existingPost.content = content;
 				existingPost.date = dayjs().toISOString();
 			}
 		},
-		reactionAdded(state, action) {
-			const { postId, reaction }: EditPostType = action.payload;
-			const existingPost = state.posts.find((post) => post.id === postId);
+		reactionAdded(state, action: PayloadAction<EditPostType>) {
+			const { postId, reaction } = action.payload;
+			const existingPost = state.entities[postId];
 			if (existingPost !== undefined && existingPost.reactions !== undefined) {
 				existingPost.reactions[reaction]++;
 			}
 		},
 	},
-	extraReducers(builder) {
+	extraReducers: (builder) => {
 		builder
-			.addCase(fetchPosts.pending, (state, action) => {
+			.addCase(fetchPosts.pending, (state) => {
 				state.status = "padding";
 			})
 			.addCase(fetchPosts.fulfilled, (state, action) => {
 				state.status = "successed";
-				state.posts = state.posts.concat(action.payload);
+				postsAdapter.upsertMany(state, action.payload);
 			})
 			.addCase(fetchPosts.rejected, (state, action) => {
 				state.status = "failed";
@@ -92,12 +91,21 @@ export const { postAdded, postUpdated, reactionAdded } = postSlice.actions;
 
 export default postSlice.reducer;
 
-export const selectAllPosts = (state: RootState) => state.posts.posts;
+export const {
+	selectAll: selectAllPosts,
+	selectById: selectPostById,
+	selectIds: selectPostIds,
+} = postsAdapter.getSelectors<RootState>((state) => state.posts);
 
-export const selectPostById = (state: RootState, postId: string) =>
-	state.posts.posts.find((post) => post.id === postId);
+// export const selectAllPosts = (state: RootState) => postsAdapter.getSelectors().selectEntities(state.posts);
+// const postsSelect = postsAdapter.getSelectors<RootState>((state) => state.posts);
+
+// export const selectAllPosts = postsSelect.selectAll(store.getState());
+
+// export const selectPostById = (state: RootState, postId: string) =>
+// 	postsAdapter.getSelectors().selectById(state.posts, postId);
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
 	const data = await posts();
-	return data;
+	return data as unknown as Post[];
 });

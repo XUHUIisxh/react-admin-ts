@@ -25,10 +25,6 @@ const PostList = () => {
 		}
 	}, [dispatch, postsStatus]);
 
-	const orderPosts = posts.slice().sort((a: Post, b: Post) => {
-		return dayjs(b.date).valueOf() - dayjs(a.date).valueOf();
-	});
-
 	const onCardClick = (postId: string) => {
 		setPostId(postId);
 		setIsModalOpen(true);
@@ -39,7 +35,7 @@ const PostList = () => {
 		setIsEditModalOpen(true);
 	};
 
-	const renderCards = orderPosts.map((post) => (
+	const renderCards = posts.map((post) => (
 		<Col span={6} key={post.id}>
 			<Card
 				title={post.title}

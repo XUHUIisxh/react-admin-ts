@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import { users } from "../../api/fakeApi";
 import { RootState } from "../index";
 
-interface UserType {
+export interface UserType {
 	id: string;
 	name: string;
 	userName: string;
@@ -10,32 +10,32 @@ interface UserType {
 	imageUrl: string;
 }
 
-interface UserInitialType {
-	users: UserType[];
-}
+const usersAdapter = createEntityAdapter<UserType>({
+	selectId: (user) => user.id,
+});
 
-const initialState: UserInitialType = {
-	users: [],
-};
+const initialState = usersAdapter.getInitialState();
 
 export const userSlice = createSlice({
 	name: "users",
 	initialState,
 	reducers: {},
-	extraReducers(builder) {
+	extraReducers: (builder) => {
 		builder.addCase(fetchUsers.fulfilled, (state, action) => {
-			state.users = state.users.concat(...(action.payload as unknown as UserType[]));
+			usersAdapter.upsertMany(state, action.payload);
 		});
 	},
 });
 
 export default userSlice.reducer;
 
-export const selectAllUser = (state: RootState) => state.users.users;
-
-export const selectUserById = (state: RootState, userId: string) => state.users.users.find(({ id }) => id === userId);
+export const {
+	selectAll: selectAllUser,
+	selectById: selectUserById,
+	selectIds,
+} = usersAdapter.getSelectors<RootState>((state) => state.users);
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
 	const data = await users();
-	return data;
+	return data as unknown as UserType[];
 });
