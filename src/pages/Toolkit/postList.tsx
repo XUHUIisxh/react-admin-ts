@@ -10,6 +10,7 @@ import ReactionButtons from "./components/ReactionButtons";
 
 const PostList = () => {
 	const dispatch = useAppDispatch();
+
 	const [form] = Form.useForm();
 	const Item = Form.Item;
 	const TextArea = Input.TextArea;
@@ -18,12 +19,20 @@ const PostList = () => {
 	const postsStatus = useAppSelector((state) => state.posts.status);
 
 	const [postId, setPostId] = useState<string>("");
+	const [post, setPost] = useState<Post>({} as Post);
 
 	useEffect(() => {
 		if (postsStatus === "idle") {
 			dispatch(fetchPosts());
 		}
 	}, [dispatch, postsStatus]);
+
+	useEffect(() => {
+		const d = posts.find(({ id }) => id === postId);
+		if (d) {
+			setPost(d);
+		}
+	}, [postId]);
 
 	const onCardClick = (postId: string) => {
 		setPostId(postId);
@@ -33,6 +42,7 @@ const PostList = () => {
 	const onEditClick = (postId: string) => {
 		setPostId(postId);
 		setIsEditModalOpen(true);
+		form.setFieldsValue({ title: post.title, content: post.content });
 	};
 
 	const renderCards = posts.map((post) => (
@@ -56,19 +66,6 @@ const PostList = () => {
 		</Col>
 	));
 
-	const [post, setPost] = useState<Post>({} as Post);
-
-	useEffect(() => {
-		const d = posts.find(({ id }) => id === postId);
-		if (d) {
-			form.setFields([
-				{ name: "title", value: d.title },
-				{ name: "content", value: d.content },
-			]);
-			setPost(d);
-		}
-	}, [postId]);
-
 	// 查看详情 modal
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const ShowInfoModal = (
@@ -84,13 +81,18 @@ const PostList = () => {
 		</Modal>
 	);
 
+	const onEditOkClick = async (postId: string) => {
+		try {
+			const { title, content } = await form.validateFields();
+			dispatch(postUpdated({ id: postId, title, content }));
+			setIsEditModalOpen(false);
+		} catch (error) {
+			console.log("🚀 ~ file: postList.tsx:88 ~ onEditOkClick ~ error:", error);
+		}
+	};
+
 	// 编辑 modal
 	const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-	const onEditOkClick = (postId: string) => {
-		const { title, content } = form.getFieldsValue();
-		dispatch(postUpdated({ id: postId, title, content }));
-		setIsEditModalOpen(false);
-	};
 	const ShowEditModal = (
 		<Modal
 			title='编辑'
