@@ -18,14 +18,14 @@
 目前设想的是 前端将每个路由的权限规定好 后端通过返回角色权限字段来加载路信息
 需要考虑的场景
 
-- 当前路由拥有多个子路由  但是存在不需要展示在menus中的路由
-- 当前路由拥有多个子路由  进入不需要展示的子路由中需要返回按钮返回上一级
-- 刷新页面根据浏览器地址栏高亮 menus
+1. 当前路由拥有多个子路由  但是存在不需要展示在menus中的路由
+2. 当前路由拥有多个子路由  进入不需要展示的子路由中需要返回按钮返回上一级
+3. 刷新页面根据浏览器地址栏高亮 menus
 
 ## 关于状态管理 使用 @reduxjs/toolkit 本质是上简化redux的一些操作
 
-[参考文档](https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts)
-[配合typescript中文文档](https://redux-toolkit-cn.netlify.app/usage/usage-with-typescript)
+1. [参考文档](https://cn.redux.js.org/tutorials/essentials/part-1-overview-concepts)
+2. [配合typescript中文文档](https://redux-toolkit-cn.netlify.app/usage/usage-with-typescript)
 
 ## eslint
 
@@ -40,6 +40,6 @@
 
 ## mock
 
-[mswjs](https://github.com/mswjs/data)
-[faker-js](https://github.com/faker-js/faker)
-[掘金例子](https://juejin.cn/post/7018732383067176991#heading-3)
+1. [mswjs](https://github.com/mswjs/data)
+2. [faker-js](https://github.com/faker-js/faker)
+3. [掘金例子](https://juejin.cn/post/7018732383067176991#heading-3)
